@@ -1,0 +1,29 @@
+{
+  "video_sources": [
+    {
+      "id": "samplelib",
+      "type": "mp4_list",
+      "url": "https://samplelib.com/lib/preview/mp4/sample-5s.mp4"
+    },
+    {
+      "id": "filesamples",
+      "type": "mp4_list",
+      "url": "https://filesamples.com/samples/video/mp4/sample_640x360.mp4"
+    },
+    {
+      "id": "commondatastorage",
+      "type": "mp4_list",
+      "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
+    },
+    {
+      "id": "commondatastorage2",
+      "type": "mp4_list",
+      "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    },
+    {
+      "id": "commondatastorage3",
+      "type": "mp4_list",
+      "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+    }
+  ]
+}
