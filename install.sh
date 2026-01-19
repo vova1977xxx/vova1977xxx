@@ -20,6 +20,7 @@ fi
 chmod +x /srv/gemivas-platform/status.sh || true
 
 # 4) cron
+( crontab -l 2>/dev/null; echo "*/5 * * * * python3 /srv/gemivas-platform/workers/video_publish_worker.py >> /srv/logs/video_publish_worker.log 2>&1" ) | crontab -
 ( crontab -l 2>/dev/null; echo "*/10 * * * * python3 /srv/gemivas-platform/workers/news_fetch_worker.py >> /srv/logs/news_worker.log 2>&1" ) | crontab -
 ( crontab -l 2>/dev/null; echo "*/10 * * * * python3 /srv/gemivas-platform/workers/radio_health_worker.py >> /srv/logs/radio_worker.log 2>&1" ) | crontab -
 
