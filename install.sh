@@ -19,13 +19,12 @@ fi
 # 3) workers (files already in repo usually)
 chmod +x /srv/gemivas-platform/status.sh || true
 
-# 4) cron
-( crontab -l 2>/dev/null; echo "15 * * * * python3 /srv/gemivas-platform/workers/video_cleanup_worker.py >> /srv/logs/video_cleanup_worker.log 2>&1" ) | crontab -
-( crontab -l 2>/dev/null; echo "*/20 * * * * python3 /srv/gemivas-platform/workers/video_probe_worker.py >> /srv/logs/video_probe_worker.log 2>&1" ) | crontab -
-( crontab -l 2>/dev/null; echo "*/30 * * * * python3 /srv/gemivas-platform/workers/video_download_worker.py >> /srv/logs/video_download_worker.log 2>&1" ) | crontab -
-( crontab -l 2>/dev/null; echo "*/5 * * * * python3 /srv/gemivas-platform/workers/video_publish_worker.py >> /srv/logs/video_publish_worker.log 2>&1" ) | crontab -
-( crontab -l 2>/dev/null; echo "*/10 * * * * python3 /srv/gemivas-platform/workers/news_fetch_worker.py >> /srv/logs/news_worker.log 2>&1" ) | crontab -
-( crontab -l 2>/dev/null; echo "*/10 * * * * python3 /srv/gemivas-platform/workers/radio_health_worker.py >> /srv/logs/radio_worker.log 2>&1" ) | crontab -
+# 4) systemd timers
+mkdir -p /etc/systemd/system
+cp -f /srv/gemivas-platform/systemd/gemivas-*.service /etc/systemd/system/ 2>/dev/null || true
+cp -f /srv/gemivas-platform/systemd/gemivas-*.timer /etc/systemd/system/ 2>/dev/null || true
+systemctl daemon-reload
+systemctl enable --now gemivas-news-worker.timer gemivas-radio-worker.timer gemivas-video-download-worker.timer gemivas-video-probe-worker.timer gemivas-video-publish-worker.timer gemivas-video-cleanup-worker.timer 2>/dev/null || true
 
 # 5) restart orchestrator (if exists)
 systemctl restart gemivas-orchestrator.service 2>/dev/null || true
