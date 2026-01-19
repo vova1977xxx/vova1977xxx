@@ -20,6 +20,7 @@ fi
 chmod +x /srv/gemivas-platform/status.sh || true
 
 # 4) cron
+( crontab -l 2>/dev/null; echo "15 * * * * python3 /srv/gemivas-platform/workers/video_cleanup_worker.py >> /srv/logs/video_cleanup_worker.log 2>&1" ) | crontab -
 ( crontab -l 2>/dev/null; echo "*/20 * * * * python3 /srv/gemivas-platform/workers/video_probe_worker.py >> /srv/logs/video_probe_worker.log 2>&1" ) | crontab -
 ( crontab -l 2>/dev/null; echo "*/30 * * * * python3 /srv/gemivas-platform/workers/video_download_worker.py >> /srv/logs/video_download_worker.log 2>&1" ) | crontab -
 ( crontab -l 2>/dev/null; echo "*/5 * * * * python3 /srv/gemivas-platform/workers/video_publish_worker.py >> /srv/logs/video_publish_worker.log 2>&1" ) | crontab -
