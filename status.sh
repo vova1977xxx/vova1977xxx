@@ -19,6 +19,9 @@ df -h / | tail -n 1
 echo
 
 echo "== MEMORY =="
+echo "uploads mp4:" $(ls -1 /srv/uploads/feed/*.mp4 2>/dev/null | wc -l) || true
+echo "published mp4:" $(find /srv/web/feed/videos -type f -name "*.mp4" 2>/dev/null | wc -l) || true
+echo
 python3 - <<'PY2'
 import json,os
 def load(p, key):
