@@ -1,0 +1,8 @@
+[Unit]
+Description=GEMIVAS news fetch worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /srv/gemivas-platform/workers/news_fetch_worker.py

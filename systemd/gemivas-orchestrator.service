@@ -1,0 +1,15 @@
+[Unit]
+Description=GEMIVAS Orchestrator (UA-only)
+After=network-online.target ollama.service
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=/srv/ai_core/orchestrator/conf/binance.env
+Type=simple
+WorkingDirectory=/srv/ai_core/orchestrator
+ExecStart=/srv/ai_core/orchestrator/venv/bin/uvicorn app:app --host 127.0.0.1 --port 9002
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
