@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",()=>{let t=5,el=document.getElementById("adT"),box=document.getElementById("adBox"),v=document.getElementById("gemivasPlayer");if(!el||!box||!v)return;try{v.pause()}catch(e){};let iv=setInterval(()=>{t--;el.textContent=t;if(t<=0){clearInterval(iv);box.style.display="none";try{v.play()}catch(e){}}},1000);});

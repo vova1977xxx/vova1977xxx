@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Chat · GEMIVAS</title>
+  <link rel="stylesheet" href="/css/neon.css">
+</head>
+<body>
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div class="neon-title" style="font-size:28px">GEMIVAS</div>
+      <a class="neon-btn violet" href="/">⬅ HOME</a>
+    </div>
+    <div class="neon-subtitle">Public Chat (MVP)</div>
+    <div class="neon-line"></div>
+
+    <div class="neon-card">
+      <div class="neon-title" style="font-size:14px">💬 Чат</div>
+      <div class="neon-subtitle">Пиши повідомлення. Відповідь генерується AI ядром.</div>
+
+      <div class="neon-line"></div>
+
+      <div id="chatOut" class="neon-grid" style="gap:10px"></div>
+
+      <div style="height:12px"></div>
+
+      <textarea id="chatIn" class="neon-input" style="min-height:90px" placeholder="Напиши повідомлення..."></textarea>
+      <div style="height:10px"></div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button id="sendBtn" class="neon-btn">Send</button>
+        <button id="clearBtn" class="neon-btn red">Clear</button>
+      </div>
+
+      <div style="height:10px"></div>
+      <div id="chatStatus" class="neon-subtitle"></div>
+    </div>
+
+    <div class="neon-line"></div>
+    <div class="neon-subtitle">
+      <a href="/about">Про проект</a> · <a href="/privacy">Конфіденційність</a> · <a href="/news">Новини</a> · <a href="/donate/">Donate</a>
+    </div>
+  </div>
+
+  <script src="/js/chat.js?v=1"></script>
+</body>
+</html>

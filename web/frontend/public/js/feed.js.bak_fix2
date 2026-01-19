@@ -1,0 +1,108 @@
+console.log("FEEDJS LOADED v=100");
+(function () {
+  const video = document.getElementById('video');
+  const vTitle = document.getElementById('vTitle');
+  const vTags = document.getElementById('vTags');
+
+  let items = [];
+  let idx = 0;
+  let wheelLock = false;
+
+  function dbg(m){ const d=document.getElementById("dbg"); if(d) d.textContent=m; }
+
+  video.addEventListener("loadedmetadata", ()=>dbg("DBG: metadata "+video.videoWidth+"x"+video.videoHeight+" dur="+video.duration));
+  video.addEventListener("canplay", ()=>dbg("DBG: canplay "+video.currentSrc+" paused="+video.paused));
+  setInterval(()=>{dbg("DBG: t="+video.currentTime.toFixed(1)+" paused="+video.paused+" size="+video.videoWidth+"x"+video.videoHeight);}, 800);
+  video.addEventListener("error", ()=>dbg("DBG: ERROR code="+(video.error?video.error.code:"?")+" src="+video.currentSrc));
+
+  async function loadFeed() {
+    const r = await fetch('/api/feed?_=' + Date.now());
+    const j = await r.json();
+    items = (j.items || []).filter(x => x && x.src);
+    const dbg=document.getElementById("dbg"); if(dbg) dbg.textContent="DBG: items="+items.length;
+  }
+
+  function render(i) {
+    if (!items.length) return;
+    const it = items[i];
+
+    video.src = it.src;
+    const dbg=document.getElementById('dbg'); if(dbg) dbg.textContent='DBG: src='+it.src;
+    video.load();
+    if (vTitle) vTitle.textContent = it.title || '';
+    if (vTags) vTags.textContent = (it.tags || []).map(t => '#' + t).join(' ');
+    video.play().then(()=>{dbg("DBG: playing ok");}).catch((e)=>{dbg("DBG: play blocked "+e);});
+  }
+
+  function next() {
+    if (!items.length) return;
+    idx = (idx + 1) % items.length;
+    render(idx);
+  }
+
+  function prev() {
+    if (!items.length) return;
+    idx = (idx - 1 + items.length) % items.length;
+    render(idx);
+  }
+
+  function onWheel(e) {
+    if (wheelLock) return;
+    wheelLock = true;
+
+    if (e.deltaY > 0) next();
+    else prev();
+
+    setTimeout(() => { wheelLock = false; }, 350);
+  }
+
+  window.addEventListener('wheel', onWheel, { passive: true });
+
+  // Touch swipe
+  let touchY = null;
+  window.addEventListener('touchstart', (e) => {
+    touchY = e.touches && e.touches[0] ? e.touches[0].clientY : null;
+  }, { passive: true });
+
+  window.addEventListener('touchend', (e) => {
+    if (touchY === null) return;
+    const y2 = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : null;
+    if (y2 === null) return;
+
+    const dy = y2 - touchY;
+    if (Math.abs(dy) < 40) return;
+
+    if (dy < 0) next();
+    else prev();
+
+    touchY = null;
+  }, { passive: true });
+
+  // Buttons
+  const btnLike = document.getElementById('btnLike');
+  const btnShare = document.getElementById('btnShare');
+  const btnSave = document.getElementById('btnSave');
+
+  if (btnLike) btnLike.onclick = () => console.log('LIKE', items[idx]?.id);
+  if (btnSave) btnSave.onclick = () => console.log('SAVE', items[idx]?.id);
+  if (btnShare) btnShare.onclick = async () => {
+    const url = location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      console.log('SHARE copied', url);
+    } catch(e) {
+      console.log('SHARE', url);
+    }
+  };
+
+  ('use strict');
+(async function init() {
+  const dbg=document.getElementById('dbg'); if(dbg) dbg.textContent='DBG: js loaded';
+    await loadFeed();
+    if (!items.length) {
+      if (vTitle) vTitle.textContent = 'No videos in feed';
+      return;
+    }
+    render(idx);
+  })();
+})();

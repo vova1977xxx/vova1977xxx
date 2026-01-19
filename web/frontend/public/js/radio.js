@@ -1,0 +1,3 @@
+async function rb(q){let u="https://de1.api.radio-browser.info/json/stations/search?limit=8&hidebroken=true&name="+encodeURIComponent(q);return fetch(u).then(r=>r.json())}
+async function go(){let q=document.getElementById("rbq").value||"rock";let d=await rb(q);let out=document.getElementById("rbout");out.innerHTML="";d.forEach(s=>{let b=document.createElement("button");b.className="neon-btn";b.textContent=s.name; b.onclick=()=>play(s.url_resolved||s.url); out.appendChild(b)})}
+function play(url){let a=document.getElementById("radioAudio");a.src=url;a.play();document.getElementById("rbnow").textContent=url}

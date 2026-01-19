@@ -1,0 +1,54 @@
+<!doctype html><html lang="uk"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Donate · GEMIVAS</title><link rel="stylesheet" href="/css/neon.css"></head><body>
+<div class="container">
+  <div class="neon-title" style="font-size:26px">💛 DONATE</div>
+  <div class="neon-subtitle">Підтримай GEMIVAS (PayPal)</div>
+  <div class="neon-line"></div>
+  <div class="neon-card">
+    <div class="neon-title" style="font-size:14px">Швидкий донат (AUTO GEO)</div>
+    <div class="neon-subtitle" style="font-size:12px;opacity:.9">UA = USD (PayPal не підтримує UAH)</div>
+    <div style="height:10px"></div>
+    <div id="donate-buttons"></div>
+    <div style="height:10px"></div>
+    <div class="neon-subtitle" style="font-size:12px;opacity:.9">Оплата можлива карткою або PayPal.</div>
+    <div class="neon-line"></div>
+    <div class="neon-title" style="font-size:14px">Actions (після оплати)</div>
+    <div class="neon-subtitle">1) 5 — Куська WIGGLE<br>2) 10 — Маска RUN<br>3) 20 — HIDE/SHOW режим</div>
+    <div class="neon-line"></div>
+    <div class="tag">MVP: AUTO GEO кнопки</div>
+    <div style="height:10px"></div>
+    <a class="neon-btn" href="/">← Назад</a>
+  </div>
+</div>
+<script>
+(async () => {
+  let cc = "US";
+  try {
+    const r = await fetch("/data/geo.json", {cache:"no-store"});
+    const j = await r.json();
+    cc = (j.country_code || j.country || "US").toUpperCase();
+  } catch(e) {}
+
+  let currency = "USD";
+  if (cc === "PL") currency = "PLN";
+  else if (cc === "GB") currency = "GBP";
+  else if (["DE","FR","ES","IT","NL","BE","AT","PT","IE","FI","GR","LT","LV","EE","SK","SI","HR","CY","MT","LU","CZ","RO","BG","HU","SE","DK"].includes(cc)) currency = "EUR";
+  else if (cc === "UA") currency = "USD";
+
+  const amounts = [5,10,20];
+  const box = document.getElementById("donate-buttons");
+
+  function addBtn(text, url){
+    const a=document.createElement("a");
+    a.className="neon-btn";
+    a.href=url; a.target="_blank"; a.rel="noopener";
+    a.textContent=text;
+    a.style.display="block";
+    a.style.marginBottom="10px";
+    box.appendChild(a);
+  }
+
+  for (const amt of amounts) addBtn(`💛 ${amt} ${currency} — Donat`, `https://www.paypal.me/GEMIVAS/${amt}`);
+  addBtn("💛 Інша сума", "https://www.paypal.me/GEMIVAS");
+})();
+</script>
+</body></html>

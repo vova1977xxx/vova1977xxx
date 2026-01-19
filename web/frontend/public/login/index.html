@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GEMIVAS — Login</title>
+  <link rel="stylesheet" href="/css/neon.css">
+  <link rel="stylesheet" href="/css/feed.css">
+</head>
+<body class="gv-app">
+  <div class="gv-layout">
+    <aside id="sidebar" class="gv-sidebar"></aside>
+    <main class="gv-main">
+      <div style="padding:24px;max-width:560px;">
+        <h1>Login</h1>
+        <p>Temporary page (MVP).</p>
+
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px;">
+          <input id="email" placeholder="email" style="padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);color:#fff;">
+          <input id="pass" type="password" placeholder="password" style="padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);color:#fff;">
+          <button id="btn" class="gv-btn" style="width:140px;">Login</button>
+        </div>
+
+        <div id="msg" style="margin-top:12px;opacity:.8;"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script>
+    document.getElementById('btn').onclick = function () {
+      const email = document.getElementById('email').value.trim();
+      if (!email) return;
+
+      localStorage.setItem('gv_user', email);
+      document.getElementById('msg').textContent = 'Logged in as: ' + email;
+
+      setTimeout(() => location.href = '/feed/', 350);
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GEMIVAS — Profile</title>
+  <link rel="stylesheet" href="/css/neon.css">
+  <link rel="stylesheet" href="/css/feed.css">
+</head>
+<body class="gv-app">
+  <div class="gv-layout">
+    <aside id="sidebar" class="gv-sidebar"></aside>
+    <main class="gv-main">
+      <div style="padding:24px;max-width:560px;">
+        <h1>Profile</h1>
+
+        <div id="me" style="margin-top:10px;opacity:.9;"></div>
+
+        <div style="margin-top:16px;">
+          <button id="btnLogout" class="gv-btn" style="width:140px;">Logout</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script>
+    const u = localStorage.getItem('gv_user') || '';
+    document.getElementById('me').textContent = u ? ('Logged in as: ' + u) : 'guest';
+
+    document.getElementById('btnLogout').onclick = function () {
+      localStorage.removeItem('gv_user');
+      location.href = '/feed/';
+    };
+  </script>
+</body>
+</html>

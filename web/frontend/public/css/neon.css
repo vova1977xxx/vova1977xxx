@@ -1,0 +1,7 @@
+:root{--bg:#05060a;--t:#e9f0ff;--m:#9bb0d6;--c:#00f0ff;--v:#a855f7;--r:#ff3b7d;--rad:18px}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(900px 500px at 20% 10%,rgba(0,240,255,.10),transparent 60%),radial-gradient(900px 500px at 80% 20%,rgba(168,85,247,.10),transparent 60%),linear-gradient(180deg,#05060a,#090b12);color:var(--t);font-family:system-ui}
+a{color:var(--c);text-decoration:none}
+.neon-card{background:rgba(255,255,255,.05);border:1px solid rgba(0,240,255,.18);border-radius:var(--rad);padding:16px;box-shadow:0 0 18px rgba(0,240,255,.18);backdrop-filter:blur(10px)}
+.neon-btn{padding:10px 14px;border-radius:14px;border:1px solid rgba(0,240,255,.25);background:rgba(0,240,255,.08);color:var(--t);cursor:pointer}
+.neon-input{width:100%;padding:12px 14px;border-radius:14px;border:1px solid rgba(0,240,255,.20);background:rgba(0,0,0,.35);color:var(--t)}

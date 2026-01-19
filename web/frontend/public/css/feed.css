@@ -1,0 +1,155 @@
+/* GEMIVAS TikTok-style Feed */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.gv-app {
+  height: 100%;
+  overflow: hidden;
+}
+
+.gv-layout {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+}
+
+.gv-sidebar {
+  border-right: 1px solid rgba(255,255,255,0.08);
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.gv-main {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.gv-feed {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.gv-player {
+  width: min(520px, 96vw);
+  height: min(92vh, 920px);
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.35);
+}
+
+.gv-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+
+.gv-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.gv-meta {
+  max-width: 75%;
+}
+
+.gv-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.gv-tags {
+  margin-top: 6px;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.gv-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.gv-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.28);
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.gv-hint {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  opacity: 0.55;
+}
+
+@media (max-width: 860px) {
+  .gv-layout { grid-template-columns: 78px 1fr; }
+}
+
+/* Sidebar UI */
+.gv-brand{
+  font-size:20px;
+  font-weight:900;
+  margin-bottom:12px;
+}
+
+.gv-status{
+  font-size:12px;
+  opacity:.8;
+  margin-bottom:14px;
+}
+
+.gv-nav{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-bottom:14px;
+}
+
+.gv-nav-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:12px;
+  text-decoration:none;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(0,0,0,0.18);
+}
+
+.gv-nav-item:hover{
+  background:rgba(0,0,0,0.32);
+}
+
+.gv-nav-ic{ width:22px; }
+.gv-nav-tx{ font-size:14px; }
+
+.gv-auth{
+  margin-top:auto;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}

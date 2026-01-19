@@ -1,0 +1,28 @@
+<!doctype html><html lang="uk"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Новини — GEMIVAS</title>
+</head><body style="font-family:system-ui;margin:40px;max-width:900px">
+<a href="/">← На головну</a>
+<h1>Новини (RSS)</h1>
+<div id="status">Завантаження…</div>
+<ul id="list"></ul>
+
+<script>
+(async ()=>{
+  try{
+    const r = await fetch("/data/rss_latest.json?ts="+Date.now());
+    const j = await r.json();
+    document.getElementById("status").textContent = "Оновлено: " + j.updated;
+    const ul = document.getElementById("list");
+    ul.innerHTML = "";
+    for(const it of j.items){
+      const li = document.createElement("li");
+      li.innerHTML = `<b>${it.source}</b>: <a href="${it.link}" target="_blank" rel="noopener">${it.title}</a>`;
+      ul.appendChild(li);
+    }
+  }catch(e){
+    document.getElementById("status").textContent = "Помилка завантаження: " + e;
+  }
+})();
+</script>
+</body></html>
