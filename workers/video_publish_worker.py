@@ -4,6 +4,18 @@ MEM="/srv/memory/feed"
 IDX=os.path.join(MEM,"index.json")
 VIDEOS="/srv/web/feed/videos"
 UPLOAD="/srv/uploads/feed"
+
+# AUTO TAGS (MVP)
+def tags_for(src: str):
+  x=(src or "").lower()
+  t=[]
+  if "bunny" in x or "elephant" in x: t.append("animals")
+  if "fun" in x or "bigger" in x: t.append("fun")
+  if "music" in x or "sine" in x: t.append("music")
+  if "wow" in x or "dream" in x: t.append("wow")
+  if not t: t=["fun"]
+  return t
+
 LOOPS="/srv/web/video_8k/loops"
 
 def load():
@@ -43,7 +55,7 @@ def main():
  for src in cand[:50]:
   if src in have: continue
   vid,url=publish(src)
-  items.insert(0,{"id":vid,"title":"GEMIVAS Video","url":url,"src":src,"ts":int(time.time())})
+  items.insert(0,{"id":vid,"title":"GEMIVAS Video","url":url,"src":src,"tags":tags_for(src),"ts":int(time.time())})
   added+=1
   if added>=10: break
  j["items"]=items[:500]
