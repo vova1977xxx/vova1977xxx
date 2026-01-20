@@ -1,0 +1,10 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: gemivas-redis
+    restart: always
+    command: ["redis-server","--appendonly","yes"]
+    volumes:
+      - /srv/redis:/data
+    ports:
+      - "127.0.0.1:6379:6379"

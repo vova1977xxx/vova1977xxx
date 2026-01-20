@@ -39,3 +39,6 @@ echo "== API QUICKCHECK =="
 curl -fsS https://gemivas.com/api/feed >/dev/null && echo "feed: OK" || echo "feed: FAIL"
 curl -fsS https://gemivas.com/api/radio >/dev/null && echo "radio: OK" || echo "radio: FAIL"
 curl -fsS https://gemivas.com/api/news >/dev/null && echo "news: OK" || echo "news: FAIL"
+
+echo "queue tasks: $(redis-cli -h 127.0.0.1 llen q:tasks 2>/dev/null || echo -)"
+echo "queue dlq:   $(redis-cli -h 127.0.0.1 llen q:dlq 2>/dev/null || echo -)"
