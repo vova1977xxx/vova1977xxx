@@ -132,3 +132,13 @@ def download_url(url: str):
 if __name__ == "__main__":
     main()
 
+
+def source_fail(url:str):
+    try:
+        con=db()
+        con.execute("UPDATE sources SET fail_count=fail_count+1,last_fail=? WHERE url=? AND kind='video'",(int(time.time()),url))
+        con.execute("UPDATE sources SET enabled=0 WHERE url=? AND kind='video' AND fail_count>=3",(url,))
+        con.commit()
+        con.close()
+    except Exception:
+        pass
