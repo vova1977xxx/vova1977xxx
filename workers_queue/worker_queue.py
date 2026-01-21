@@ -123,7 +123,7 @@ def download_url(url: str, source_id=None):
         "type": "publish_upload",
         "src": "download",
         "prio": 100,
-        "payload": {"path": out},
+        "payload": {"path": out, "source_id": source_id},
         "try": 0,
         "ts": int(time.time()),
     }))
