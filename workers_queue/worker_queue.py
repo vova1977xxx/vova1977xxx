@@ -63,7 +63,7 @@ def handle(task: dict):
         url = p.get("url","")
         if not url:
             return {"ok": False, "error": "missing url"}
-        return download_url(url)
+        return download_url(url, p.get("source_id"))
 
 
     if t == "publish_upload":
@@ -99,7 +99,7 @@ def main():
 
 
 # --- download task ---
-def download_url(url: str):
+def download_url(url: str, source_id=None):
     vid = str(int(time.time()*1000))
     tmp = f"/srv/downloads/{vid}.mp4"
     out = f"{UPLOAD_DIR}/{vid}.mp4"
@@ -111,10 +111,11 @@ def download_url(url: str):
             os.remove(tmp)
         except Exception:
             pass
-        source_fail(url)
+        source_fail(url, source_id)
         return {"ok": False, "error": "download_failed"}
 
     shutil.move(tmp, out)
+    source_ok(source_id)
 
     # next step -> publish
     R.lpush(Q_TASKS, json.dumps({
@@ -133,11 +134,22 @@ if __name__ == "__main__":
     main()
 
 
-def source_fail(url:str):
+def source_fail(url:str, source_id=None):
     try:
         con=db()
         con.execute("UPDATE sources SET fail_count=fail_count+1,last_fail=? WHERE url=? AND kind='video'",(int(time.time()),url))
         con.execute("UPDATE sources SET enabled=0 WHERE url=? AND kind='video' AND fail_count>=3",(url,))
+        con.commit()
+        con.close()
+    except Exception:
+        pass
+
+def source_ok(source_id:str):
+    try:
+        if not source_id:
+            return
+        con=db()
+        con.execute("UPDATE sources SET fail_count=0,last_ok=? WHERE id=? AND kind='video'",(int(time.time()),source_id))
         con.commit()
         con.close()
     except Exception:
