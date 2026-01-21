@@ -104,7 +104,7 @@ def download_url(url: str, source_id=None):
     tmp = f"/srv/downloads/{vid}.mp4"
     out = f"{UPLOAD_DIR}/{vid}.mp4"
 
-    os.system(f"curl -L --connect-timeout 20 --max-time 600 -A 'GEMIVAS' -o '{tmp}' '{url}'")
+    os.system(f"curl -f -sS -L --connect-timeout 20 --max-time 600 -A 'GEMIVAS' -o '{tmp}' '{url}'")
 
     if not os.path.exists(tmp) or os.path.getsize(tmp) < 50000:
         try:
