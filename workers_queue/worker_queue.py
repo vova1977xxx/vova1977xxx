@@ -74,6 +74,7 @@ def handle(task: dict):
             return {"ok": False, "error": "bad path"}
         if not os.path.exists(fp):
             return {"ok": False, "error": "not found"}
+        source_ok(p.get("source_id"))
         return publish_file(fp, src=task.get("src","upload"))
 
     return {"ok": False, "error": "unknown_task_type", "type": t}
@@ -115,7 +116,6 @@ def download_url(url: str, source_id=None):
         return {"ok": False, "error": "download_failed"}
 
     shutil.move(tmp, out)
-    source_ok(source_id)
 
     # next step -> publish
     R.lpush(Q_TASKS, json.dumps({
