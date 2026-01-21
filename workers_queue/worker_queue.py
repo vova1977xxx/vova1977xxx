@@ -43,7 +43,7 @@ def publish_file(src_path: str, src="upload"):
     con=db()
     try:
         con.execute(
-            "INSERT OR IGNORE INTO videos(id,title,url,src,ts,tags,pipeline_status) VALUES (?,?,?,?,?,?,?)",
+            "INSERT INTO videos(id,title,url,src,ts,tags,pipeline_status) VALUES (?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET url=excluded.url, src=excluded.src, ts=excluded.ts, pipeline_status=excluded.pipeline_status",
             (vid, vid, rel, src, int(time.time()), "", "published")
         )
         con.commit()
