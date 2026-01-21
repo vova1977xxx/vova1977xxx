@@ -1,4 +1,4 @@
-import json, time, traceback, os, shutil, pathlib, sqlite3
+import json, time, traceback, os, shutil, pathlib, sqlite3, subprocess
 import redis
 
 R = redis.Redis(host="127.0.0.1", port=6379, decode_responses=True)
@@ -104,7 +104,7 @@ def download_url(url: str, source_id=None):
     tmp = f"/srv/downloads/{vid}.mp4"
     out = f"{UPLOAD_DIR}/{vid}.mp4"
 
-    os.system(f"curl -f -sS -L --connect-timeout 20 --max-time 600 -A 'GEMIVAS' -o '{tmp}' '{url}'")
+    cmd=["curl","-f","-sS","-L","--connect-timeout","20","--max-time","600","-A","GEMIVAS","-o",tmp,url]; r=subprocess.run(cmd, capture_output=True, text=True); print("curl",r.returncode,url,flush=True); 0 if r.returncode==0 else print(r.stderr[:300],flush=True)
 
     if not os.path.exists(tmp) or os.path.getsize(tmp) < 50000:
         try:
