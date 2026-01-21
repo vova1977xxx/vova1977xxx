@@ -1,0 +1,14 @@
+[Unit]
+Description=GEMIVAS Queue Worker (CANON)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/srv/gemivas-platform
+ExecStart=/srv/ai_core/orchestrator/venv/bin/python /srv/gemivas-platform/workers_queue/worker_queue.py
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
