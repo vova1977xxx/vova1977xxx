@@ -137,12 +137,17 @@ if __name__ == "__main__":
 def source_fail(url:str, source_id=None):
     try:
         con=db()
-        con.execute("UPDATE sources SET fail_count=fail_count+1,last_fail=? WHERE url=? AND kind='video'",(int(time.time()),url))
-        con.execute("UPDATE sources SET enabled=0 WHERE url=? AND kind='video' AND fail_count>=3",(url,))
+        if source_id:
+            con.execute("UPDATE sources SET fail_count=fail_count+1,last_fail=? WHERE id=? AND kind='video'",(int(time.time()),source_id))
+            con.execute("UPDATE sources SET enabled=0 WHERE id=? AND kind='video' AND fail_count>=3",(source_id,))
+        else:
+            con.execute("UPDATE sources SET fail_count=fail_count+1,last_fail=? WHERE url=? AND kind='video'",(int(time.time()),url))
+            con.execute("UPDATE sources SET enabled=0 WHERE url=? AND kind='video' AND fail_count>=3",(url,))
         con.commit()
         con.close()
     except Exception:
         pass
+
 
 def source_ok(source_id:str):
     try:
