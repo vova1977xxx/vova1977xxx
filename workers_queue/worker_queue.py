@@ -13,8 +13,9 @@ WEB_ROOT="/srv/web/feed/videos"
 MAX_TRY = 3
 
 def db():
-    con=sqlite3.connect(DB)
+    con=sqlite3.connect(DB, timeout=30)
     con.row_factory=sqlite3.Row
+    con.execute("PRAGMA busy_timeout=30000")
     return con
 
 def requeue(task: dict):
@@ -121,4 +122,8 @@ def download_url(url: str, source_id=None):
     pub = publish_file(out, src="download")
     source_ok(source_id)
     return pub
+
+
+if __name__ == "__main__":
+    main()
 
