@@ -9,18 +9,18 @@ SLEEP_SEC=300
 def h(s): return hashlib.sha256(s.encode()).hexdigest()[:16]
 def load_urls():
   con=sqlite3.connect(DB);cur=con.cursor()
-  rows=cur.execute("select url from sources where kind='video' and enabled=1 order by id").fetchall()
-  con.close();return [r[0] for r in rows]
+  rows=cur.execute("select id,url from sources where kind='video' and enabled=1 order by id").fetchall()
+  con.close();return rows
 def push(url):
   key="src:seen:"+h(url)
   if R.get(key) or R.llen(Q)>=MAX_QUEUE: return False
   tid=f"brain-{int(time.time()*1000)}"
-  R.lpush(Q,json.dumps({"id":tid,"type":"download","payload":{"url":url},"try":0,"ts":int(time.time())}))
+  R.lpush(Q,json.dumps({"id":tid,"type":"download","payload":{"url":url,"source_id":sid},"try":0,"ts":int(time.time())}))
   R.setex(key,COOLDOWN_SEC,"1");return True
 def main():
   while True:
     try:
-      for url in load_urls():
+      for sid,url in load_urls():
         url=(url or "").strip()
         if not url.startswith("http"): continue
         ok=push(url);print("push",url,ok,flush=True)
