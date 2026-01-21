@@ -111,6 +111,7 @@ def download_url(url: str):
             os.remove(tmp)
         except Exception:
             pass
+        source_fail(url)
         return {"ok": False, "error": "download_failed"}
 
     shutil.move(tmp, out)
