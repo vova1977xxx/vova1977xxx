@@ -1,0 +1,25 @@
+# runtime db
+db/*.db
+db/*.sqlite
+db/*.sqlite-*
+
+# caches / python
+__pycache__/
+**/__pycache__/
+
+# backups
+*.bak
+*.bak.*
+*.safe.*
+
+# local env
+.env
+.venv/
+venv/
+
+# nginx runtime
+nginx/logs/
+nginx/cache/
+
+# misc
+*.log
