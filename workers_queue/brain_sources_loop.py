@@ -1,7 +1,7 @@
 import json,time,hashlib,redis,sqlite3
 R=redis.Redis(host="127.0.0.1",port=6379,decode_responses=True)
 Q="q:tasks"
-DB="/srv/gemivas-platform/db/gemivas.sqlite"
+DB="/srv/gemivas_platform/data/gemivas.db"
 MAX_QUEUE=20
 COOLDOWN_SEC=21600
 SLEEP_SEC=300

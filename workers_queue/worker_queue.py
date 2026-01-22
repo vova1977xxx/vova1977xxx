@@ -1,3 +1,4 @@
+from tasks_thumbnail import make_thumbnail as _thumb
 import json, time, traceback, os, shutil, pathlib, sqlite3, subprocess
 import redis
 
@@ -6,7 +7,7 @@ R = redis.Redis(host="127.0.0.1", port=6379, decode_responses=True)
 Q_TASKS = "q:tasks"
 Q_DLQ   = "q:dlq"
 
-DB="/srv/gemivas-platform/db/gemivas.sqlite"
+DB="/srv/gemivas_platform/data/gemivas.db"
 UPLOAD_DIR="/srv/uploads/feed"
 WEB_ROOT="/srv/web/feed/videos"
 
@@ -44,8 +45,8 @@ def publish_file(src_path: str, src="upload"):
     con=db()
     try:
         con.execute(
-            "INSERT INTO videos(id,title,url,src,ts,tags,pipeline_status) VALUES (?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET url=excluded.url, src=excluded.src, ts=excluded.ts, pipeline_status=excluded.pipeline_status",
-            (vid, vid, rel, src, int(time.time()), "", "published")
+            "INSERT INTO videos(id,title,url,src,ts,tags_json,pipeline_status,local_file_path,source_id,popularity_score) VALUES (?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET url=excluded.url, src=excluded.src, ts=excluded.ts, pipeline_status=excluded.pipeline_status, local_file_path=excluded.local_file_path, source_id=excluded.source_id",
+            (vid, vid, rel, src, int(time.time()), "", "published", out_path, None, 0)
         )
         con.commit()
     finally:
@@ -67,16 +68,12 @@ def handle(task: dict):
         return download_url(url, p.get("source_id"))
 
 
+    if t == "thumbnail":
+        return _thumb(db, p.get("id","") or p.get("video_id",""))
+
     if t == "publish_upload":
-        fp = p.get("path","")
-        if not fp:
-            return {"ok": False, "error": "missing path"}
-        if not fp.startswith(UPLOAD_DIR + "/"):
-            return {"ok": False, "error": "bad path"}
-        if not os.path.exists(fp):
-            return {"ok": False, "error": "not found"}
-        source_ok(p.get("source_id"))
-        return publish_file(fp, src=task.get("src","upload"))
+        return {"ok": True, "ignored": True, "reason": "legacy_publish_upload_disabled"}
+
 
     return {"ok": False, "error": "unknown_task_type", "type": t}
 
@@ -124,6 +121,46 @@ def download_url(url: str, source_id=None):
     return pub
 
 
+
+
+def source_fail(url:str, source_id=None):
+    for _ in range(3):
+        try:
+            con=db()
+            if source_id:
+                con.execute("UPDATE sources SET fail_count=fail_count+1,last_fail=? WHERE id=? AND kind='video'",(int(time.time()),source_id))
+                con.execute("UPDATE sources SET enabled=0 WHERE id=? AND kind='video' AND fail_count>=3",(source_id,))
+            else:
+                con.execute("UPDATE sources SET fail_count=fail_count+1,last_fail=? WHERE url=? AND kind='video'",(int(time.time()),url))
+                con.execute("UPDATE sources SET enabled=0 WHERE url=? AND kind='video' AND fail_count>=3",(url,))
+            con.commit()
+            con.close()
+            return
+        except Exception:
+            try:
+                con.close()
+            except Exception:
+                pass
+            time.sleep(1)
+
+def source_ok(source_id:str):
+    if not source_id:
+        return
+    for _ in range(3):
+        try:
+            con=db()
+            con.execute("UPDATE sources SET fail_count=0,last_ok=? WHERE id=? AND kind='video'",(int(time.time()),source_id))
+            con.commit()
+            con.close()
+            return
+        except Exception:
+            try:
+                con.close()
+            except Exception:
+                pass
+            time.sleep(1)
+
+
+
 if __name__ == "__main__":
     main()
-

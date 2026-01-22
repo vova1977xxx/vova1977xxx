@@ -42,3 +42,11 @@ curl -fsS https://gemivas.com/api/news >/dev/null && echo "news: OK" || echo "ne
 
 echo "queue tasks: $(redis-cli -h 127.0.0.1 llen q:tasks 2>/dev/null || echo -)"
 echo "queue dlq:   $(redis-cli -h 127.0.0.1 llen q:dlq 2>/dev/null || echo -)"
+
+echo
+echo "== BRAIN POLICY =="
+systemctl --no-pager --full status gemivas-brain-policy.timer 2>/dev/null | head -n 8 || true
+
+echo
+echo "== EVENTS (last 12) =="
+sqlite3 /srv/gemivas_platform/data/gemivas.db "select id,ts,kind,ref_id,msg from events order by id desc limit 12;" 2>/dev/null || true
