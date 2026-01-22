@@ -1,3 +1,4 @@
+from tasks_analyze_rank import analyze as _analyze, rank as _rank
 from tasks_thumbnail import make_thumbnail as _thumb
 import json, time, traceback, os, shutil, pathlib, sqlite3, subprocess
 import redis
@@ -70,6 +71,13 @@ def handle(task: dict):
 
     if t == "thumbnail":
         return _thumb(db, p.get("id","") or p.get("video_id",""))
+
+    if t == "analyze":
+        return _analyze(db, p.get("id","") or p.get("video_id",""))
+
+    if t == "rank":
+        return _rank(db, p.get("id","") or p.get("video_id",""))
+
 
     if t == "publish_upload":
         return {"ok": True, "ignored": True, "reason": "legacy_publish_upload_disabled"}
