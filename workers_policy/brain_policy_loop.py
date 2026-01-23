@@ -16,6 +16,7 @@ MIN_PUBLISHED = int(os.getenv("GEMIVAS_MIN_PUBLISHED", "120"))
 MAX_QUEUE_TASKS = int(os.getenv("GEMIVAS_MAX_QUEUE_TASKS", "200"))
 REFILL_MIN_TASKS = int(os.getenv("GEMIVAS_REFILL_MIN_TASKS", "20"))
 REFILL_COOLDOWN_SEC = int(os.getenv("GEMIVAS_REFILL_COOLDOWN_SEC", "3300"))
+REFILL_MAX_PUBLISHED = int(os.getenv("GEMIVAS_REFILL_MAX_PUBLISHED", "240"))
 
  
 def log_event(kind, ref_id, msg, data=None):
@@ -139,8 +140,11 @@ def maybe_refill_queue(tasks, published):
         last = 0
 
     if now - last < REFILL_COOLDOWN_SEC:
+REFILL_MAX_PUBLISHED = int(os.getenv("GEMIVAS_REFILL_MAX_PUBLISHED", "240"))
         log(f"SKIP refill: cooldown active ({now-last}s < {REFILL_COOLDOWN_SEC}s)")
+REFILL_MAX_PUBLISHED = int(os.getenv("GEMIVAS_REFILL_MAX_PUBLISHED", "240"))
         log_event("brain_policy","decision","skip refill cooldown",{"q_tasks":tasks,"published":published,"cooldown_sec":REFILL_COOLDOWN_SEC})
+REFILL_MAX_PUBLISHED = int(os.getenv("GEMIVAS_REFILL_MAX_PUBLISHED", "240"))
         return 0
 
     redis_set("policy:last_refill_ts", now, ex=86400)
@@ -185,6 +189,12 @@ def main():
 
 
     # queue low => refill (smart)
+    if published is not None and published > REFILL_MAX_PUBLISHED:
+        log(f"SKIP refill: published={published} > REFILL_MAX_PUBLISHED={REFILL_MAX_PUBLISHED}")
+        log_event("brain_policy","decision","skip refill too_many_published",{"published":published,"max":REFILL_MAX_PUBLISHED,"q_tasks":tasks})
+        return 0
+
+
     if tasks <= REFILL_MIN_TASKS:
         return maybe_refill_queue(tasks, published)
 
