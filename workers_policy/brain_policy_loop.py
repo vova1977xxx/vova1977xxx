@@ -14,6 +14,9 @@ REDIS_PORT = int(os.getenv("GEMIVAS_REDIS_PORT", "6379"))
 
 MIN_PUBLISHED = int(os.getenv("GEMIVAS_MIN_PUBLISHED", "120"))
 MAX_QUEUE_TASKS = int(os.getenv("GEMIVAS_MAX_QUEUE_TASKS", "200"))
+REFILL_MIN_TASKS = int(os.getenv("GEMIVAS_REFILL_MIN_TASKS", "20"))
+REFILL_COOLDOWN_SEC = int(os.getenv("GEMIVAS_REFILL_COOLDOWN_SEC", "3300"))
+
  
 def log_event(kind, ref_id, msg, data=None):
     try:
@@ -101,6 +104,11 @@ def maybe_run_doctor(reason, dlq_count):
         log_event("brain_policy","decision","skip doctor cooldown",{"dlq":dlq_count,"cooldown_sec":DOCTOR_COOLDOWN_SEC})
         return 0
 
+    # queue low => refill (smart)
+    if tasks <= REFILL_MIN_TASKS:
+        return maybe_refill_queue(tasks, published)
+
+
     if not os.path.exists(OPS_DOCTOR):
         log("ERROR: missing ops/doctor.sh")
         log_event("brain_policy","decision","doctor missing",{"path":OPS_DOCTOR})
@@ -117,6 +125,30 @@ def maybe_run_doctor(reason, dlq_count):
     return code
 
 def run_force_refill():
+
+def maybe_refill_queue(tasks, published):
+    now = int(time.time())
+    last = redis_get("policy:last_refill_ts")
+    try:
+        last = int(last) if last is not None else 0
+    except:
+        last = 0
+
+    if now - last < REFILL_COOLDOWN_SEC:
+        log(f"SKIP refill: cooldown active ({now-last}s < {REFILL_COOLDOWN_SEC}s)")
+        log_event("brain_policy","decision","skip refill cooldown",{"q_tasks":tasks,"published":published,"cooldown_sec":REFILL_COOLDOWN_SEC})
+        return 0
+
+    # queue low => refill (smart)
+    if tasks <= REFILL_MIN_TASKS:
+        return maybe_refill_queue(tasks, published)
+
+
+    redis_set("policy:last_refill_ts", now, ex=86400)
+    log(f"ACTION: q:tasks={tasks} <= REFILL_MIN_TASKS={REFILL_MIN_TASKS} => force_refill")
+    log_event("brain_policy","decision","refill_low_queue",{"q_tasks":tasks,"refill_min":REFILL_MIN_TASKS,"published":published})
+    return run_force_refill()
+
     if not os.path.exists(OPS_FORCE_REFILL):
         log(f"ERROR: missing {OPS_FORCE_REFILL}")
         return 3
@@ -155,6 +187,11 @@ def main():
         log_event("brain_policy","decision","skip overload",{"q_tasks":tasks,"max":MAX_QUEUE_TASKS})
         return 0
 
+    # queue low => refill (smart)
+    if tasks <= REFILL_MIN_TASKS:
+        return maybe_refill_queue(tasks, published)
+
+
     if published is None:
         log("ERROR: cannot compute published count")
         log_event("brain_policy","decision","published count error")
@@ -168,6 +205,11 @@ def main():
     log("OK: no action needed")
     log_event("brain_policy","decision","ok")
     return 0
+
+    # queue low => refill (smart)
+    if tasks <= REFILL_MIN_TASKS:
+        return maybe_refill_queue(tasks, published)
+
 
 if __name__ == "__main__":
     sys.exit(main())
