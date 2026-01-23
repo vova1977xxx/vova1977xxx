@@ -21,3 +21,6 @@ systemctl restart gemivas-orchestrator.service 2>/dev/null || true
 nginx -t && systemctl reload nginx
 
 echo "OK"
+
+echo "[GEMIVAS] running ops/master.sh"
+./ops/master.sh
