@@ -31,6 +31,8 @@ sudo sqlite3 "$DB" "UPDATE videos SET src='legacy' WHERE src IS NULL OR src='';"
 sudo sqlite3 "$DB" "UPDATE videos SET pipeline_status='published' WHERE pipeline_status IS NULL OR pipeline_status='';"
 sudo sqlite3 "$DB" "UPDATE videos SET ts=CAST(strftime('%s', added_at) AS INTEGER) WHERE (ts IS NULL OR ts=0) AND added_at IS NOT NULL;"
 
+bash ./ops/patch_videos_defaults.sh || true
+
 echo "missing_fields:"
 sudo sqlite3 "$DB" "SELECT COUNT(*) FROM videos WHERE src IS NULL OR pipeline_status IS NULL OR ts IS NULL OR src='' OR pipeline_status='';"
 
