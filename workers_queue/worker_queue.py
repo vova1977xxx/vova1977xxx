@@ -1,3 +1,4 @@
+from postpublish import enqueue_postpublish
 from tasks_analyze_rank import analyze as _analyze, rank as _rank
 from tasks_thumbnail import make_thumbnail as _thumb
 import json, time, traceback, os, shutil, pathlib, sqlite3, subprocess
@@ -53,6 +54,7 @@ def publish_file(src_path: str, src="upload"):
     finally:
         con.close()
 
+    enqueue_postpublish(R, Q_TASKS, vid)
     return {"ok": True, "id": vid, "url": rel}
 
 def handle(task: dict):
