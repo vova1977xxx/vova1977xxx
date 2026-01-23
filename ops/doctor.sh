@@ -16,7 +16,8 @@ echo "[3/4] canon_verify"
 sudo $ROOTT/ops/canon_verify.sh
 
 echo "[4/4] force_refill"
-sudo $ROOT./ops/force_refill.sh
+sudo $ROOT/ops/force_refill.sh
+sudo $ROOT/ops/queue_refill_analyze_rank.sh 2000
 ./ops/queue_refill_analyze_rank.sh 2000 || true
 
 echo "== DOCTOR DONE =="
