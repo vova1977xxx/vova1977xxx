@@ -125,7 +125,10 @@ def download_url(url: str, source_id=None):
 
     # publish immediately (avoid uploads cleanup race)
     pub = publish_file(out, src="download")
-    source_ok(source_id)
+    try:
+        source_ok(source_id)
+    except Exception:
+        pass
     return pub
 
 
