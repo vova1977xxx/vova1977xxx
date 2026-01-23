@@ -9,6 +9,7 @@ bash ./ops/lock_stop.sh || true
 ./ops/db_backfill_light.sh || true
 ./ops/db_need_migrate.sh && echo "-> migrate: SKIP (DB ready)" || bash ./ops/canon_migrate.sh
 bash ./ops/lock_start.sh || true
+bash ./ops/lock_start.sh || true
 
 echo "[apply_patch] systemd units"
 bash ./ops/install_systemd_units.sh
