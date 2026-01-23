@@ -1,8 +1,8 @@
-ROOT="/srv/gemivas-platform"
-
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT="/srv/gemivas-platform"
+DB="/srv/gemivas_platform/data/gemivas.db"
 
 echo "== GEMIVAS DOCTOR =="
 python3 $ROOT/scripts/log_event.py doctor start "doctor started" "{}" || true
@@ -10,16 +10,24 @@ python3 $ROOT/scripts/log_event.py doctor start "doctor started" "{}" || true
 echo "[1/4] canon_fix"
 sudo $ROOT/ops/canon_fix.sh || true
 
-echo "[2/4] canon_migrate"
-sudo $ROOT/ops/canon_migrate.sh
+echo "[2/4] canon_migrate (smart)"
+NEED_MIGRATE=0
+sqlite3 "$DB" "SELECT name FROM sqlite_master WHERE type='table' AND name='videos';" | grep -q videos || NEED_MIGRATE=1
+sqlite3 "$DB" "PRAGMA table_info(videos);" | grep -q interest_score || NEED_MIGRATE=1
+sqlite3 "$DB" "PRAGMA table_info(videos);" | grep -q pipeline_status || NEED_MIGRATE=1
+if [ "$NEED_MIGRATE" = "1" ]; then
+  echo "-> migrate: REQUIRED"
+  sudo $ROOT/ops/canon_migrate.sh
+else
+  echo "-> migrate: SKIP (DB ready)"
+fi
 
 echo "[3/4] canon_verify"
 sudo $ROOT/ops/canon_verify.sh
 
 echo "[4/4] force_refill"
 sudo $ROOT/ops/force_refill.sh
-sudo $ROOT/ops/queue_refill_analyze_rank.sh 2000
-./ops/queue_refill_analyze_rank.sh 2000 || true
+sudo $ROOT/ops/queue_refill_analyze_rank.sh 2000 || true
 
 echo "== DOCTOR DONE =="
 
