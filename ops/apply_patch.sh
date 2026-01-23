@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 echo "== GEMIVAS APPLY PATCH ==" 
 echo "[apply_patch] START"
