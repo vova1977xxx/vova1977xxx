@@ -3,7 +3,6 @@ ROOT="/srv/gemivas-platform"
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOTT="/srv/gemivas-platform"
 
 echo "== GEMIVAS DOCTOR =="
 python3 $ROOT/scripts/log_event.py doctor start "doctor started" "{}" || true
