@@ -5,7 +5,7 @@ echo "== GEMIVAS APPLY PATCH =="
 echo "[apply_patch] START"
 
 echo "[apply_patch] migrate"
-bash ./ops/canon_migrate.sh
+./ops/db_need_migrate.sh && echo "-> migrate: SKIP (DB ready)" || bash ./ops/canon_migrate.sh
 
 echo "[apply_patch] systemd units"
 bash ./ops/install_systemd_units.sh
