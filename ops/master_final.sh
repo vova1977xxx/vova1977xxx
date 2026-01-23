@@ -31,6 +31,9 @@ sleep 10
 echo "q:tasks=$(redis-cli -h 127.0.0.1 LLEN q:tasks 2>/dev/null || echo -)"
 echo "q:dlq=$(redis-cli -h 127.0.0.1 LLEN q:dlq 2>/dev/null || echo -)"
 
+echo "[8-pre] light backfill"
+bash ./ops/db_backfill_light.sh || true
+
 echo "[8/9] final verify"
 bash ./ops/canon_verify.sh || true
 
