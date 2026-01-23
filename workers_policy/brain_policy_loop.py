@@ -174,23 +174,20 @@ def main():
 
 
     if tasks > MAX_QUEUE_TASKS:
-REFILL_MIN_TASKS = int(os.getenv("GEMIVAS_REFILL_MIN_TASKS", "20"))
-REFILL_COOLDOWN_SEC = int(os.getenv("GEMIVAS_REFILL_COOLDOWN_SEC", "3300"))
-
         log(f"SKIP: queue too large tasks={tasks} > {MAX_QUEUE_TASKS}")
-REFILL_MIN_TASKS = int(os.getenv("GEMIVAS_REFILL_MIN_TASKS", "20"))
-REFILL_COOLDOWN_SEC = int(os.getenv("GEMIVAS_REFILL_COOLDOWN_SEC", "3300"))
-
         log_event("brain_policy","decision","skip overload",{"q_tasks":tasks,"max":MAX_QUEUE_TASKS})
-REFILL_MIN_TASKS = int(os.getenv("GEMIVAS_REFILL_MIN_TASKS", "20"))
-REFILL_COOLDOWN_SEC = int(os.getenv("GEMIVAS_REFILL_COOLDOWN_SEC", "3300"))
-
         return 0
 
     if published is None:
         log("ERROR: cannot compute published count")
         log_event("brain_policy","decision","published count error")
         return 4
+
+
+    # queue low => refill (smart)
+    if tasks <= REFILL_MIN_TASKS:
+        return maybe_refill_queue(tasks, published)
+
 
     if published < MIN_PUBLISHED:
         log(f"ACTION: published({published}) < MIN_PUBLISHED({MIN_PUBLISHED}) => force_refill")
