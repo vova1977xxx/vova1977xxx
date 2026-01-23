@@ -4,16 +4,16 @@ set -euo pipefail
 ROOTT="/srv/gemivas-platform"
 
 echo "== GEMIVAS DOCTOR =="
-python3 $ROOTT/scripts/log_event.py doctor start "doctor started" "{}" || true
+python3 $ROOT/scripts/log_event.py doctor start "doctor started" "{}" || true
 
 echo "[1/4] canon_fix"
-sudo $ROOTT/ops/canon_fix.sh || true
+sudo $ROOT/ops/canon_fix.sh || true
 
 echo "[2/4] canon_migrate"
-sudo $ROOTT/ops/canon_migrate.sh
+sudo $ROOT/ops/canon_migrate.sh
 
 echo "[3/4] canon_verify"
-sudo $ROOTT/ops/canon_verify.sh
+sudo $ROOT/ops/canon_verify.sh
 
 echo "[4/4] force_refill"
 sudo $ROOT/ops/force_refill.sh
@@ -42,4 +42,4 @@ sleep 12
 echo "queue tasks (after 12s): $(redis-cli -h 127.0.0.1 llen q:tasks 2>/dev/null || echo -)"
 echo "queue dlq   (after 12s): $(redis-cli -h 127.0.0.1 llen q:dlq 2>/dev/null || echo -)"
 
-python3 $ROOTT/scripts/log_event.py doctor done "doctor finished" "{\"published\":$(find /srv/web/feed/videos -type f -name \"*.mp4\" 2>/dev/null | wc -l),\"q_tasks\":$(redis-cli -h 127.0.0.1 llen q:tasks 2>/dev/null || echo -),\"q_dlq\":$(redis-cli -h 127.0.0.1 llen q:dlq 2>/dev/null || echo -)}" || true
+python3 $ROOT/scripts/log_event.py doctor done "doctor finished" "{\"published\":$(find /srv/web/feed/videos -type f -name \"*.mp4\" 2>/dev/null | wc -l),\"q_tasks\":$(redis-cli -h 127.0.0.1 llen q:tasks 2>/dev/null || echo -),\"q_dlq\":$(redis-cli -h 127.0.0.1 llen q:dlq 2>/dev/null || echo -)}" || true
