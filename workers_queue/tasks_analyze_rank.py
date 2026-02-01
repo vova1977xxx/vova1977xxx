@@ -1,10 +1,28 @@
 import time
 import sqlite3
+import json, subprocess, os
 
 def _con(db_fn):
     if callable(db_fn):
         return db_fn()
     return sqlite3.connect(db_fn)
+def _ffprobe(path: str):
+    cmd=["ffprobe","-v","error","-show_entries","format=duration:stream=codec_type,width,height","-of","json",path]
+    r=subprocess.run(cmd,capture_output=True,text=True)
+    if r.returncode!=0: return None
+    try: data=json.loads(r.stdout or "{}")
+    except Exception: return None
+    dur=None
+    try: dur=float(((data.get("format") or {}).get("duration")) or 0) or None
+    except Exception: dur=None
+    w=h=None; has_audio=0
+    for s in (data.get("streams") or []):
+        ct=(s.get("codec_type") or "").lower()
+        if ct=="video" and not w and not h:
+            w=int(s.get("width") or 0) or None
+            h=int(s.get("height") or 0) or None
+        if ct=="audio": has_audio=1
+    return {"duration_sec":dur,"width":w,"height":h,"has_audio":has_audio}
 
 def analyze(db_fn, video_id: str):
     if not video_id:
@@ -24,6 +42,17 @@ def analyze(db_fn, video_id: str):
 
     try:
         con = _con(db_fn)
+        # load local path + ffprobe
+        row = con.execute("SELECT local_file_path FROM videos WHERE id=?", (video_id,)).fetchone()
+        local_path = (row[0] if row else None)
+        if local_path and os.path.exists(local_path):
+            meta = _ffprobe(local_path) or {}
+            duration_sec = meta.get("duration_sec")
+            width = meta.get("width")
+            height = meta.get("height")
+            has_audio = meta.get("has_audio")
+            if width and height:
+                aspect_ratio = round(float(width) / float(height), 4)
         con.execute("""
             UPDATE videos
             SET last_checked=?,

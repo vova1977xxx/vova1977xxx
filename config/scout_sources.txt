@@ -1,0 +1,6 @@
+https://raw.githubusercontent.com/plotly/datasets/master/solar.mp4
+https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4
+https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4
+https://filesamples.com/samples/video/mp4/sample_640x360.mp4
+https://filesamples.com/samples/video/mp4/sample_960x540.mp4
+https://samplelib.com/lib/preview/mp4/sample-5s.mp4

@@ -1,9 +1,13 @@
+import os
+if os.path.exists("/srv/memory/fsm/LOCK_PUBLISH"): exit(0)
+import os
+if os.path.exists("/srv/memory/fsm/LOCK_PUBLISH"): exit(0)
 import os,json,time,shutil,glob,uuid
 from datetime import datetime
 MEM="/srv/memory/feed"
 IDX=os.path.join(MEM,"index.json")
 VIDEOS="/srv/web/feed/videos"
-UPLOAD="/srv/uploads/feed"
+UPLOAD="/srv/uploads/feed_DISABLED"
 
 # AUTO TAGS (MVP)
 def tags_for(src: str):
@@ -50,7 +54,7 @@ def main():
  j=load(); items=j.get("items",[])
  have=set([str(x.get("src","")) for x in items])
  cand=list_mp4(UPLOAD)
- if not cand: cand=list_mp4(LOOPS)
+ if not cand: return
  added=0
  for src in cand[:50]:
   if src in have: continue

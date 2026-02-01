@@ -1,0 +1,28 @@
+{
+  "max_new_per_run": 120,
+  "timeout_sec": 15,
+  "user_agent": "GEMIVAS-Scout/1.0",
+  "topics": {
+    "funny": [
+      "https://www.reddit.com/r/funny/.rss",
+      "https://www.reddit.com/r/Unexpected/.rss",
+      "https://www.reddit.com/r/WatchPeopleDieInside/.rss"
+    ],
+    "animals": [
+      "https://www.reddit.com/r/AnimalsBeingDerps/.rss",
+      "https://www.reddit.com/r/aww/.rss"
+    ],
+    "wow": [
+      "https://www.reddit.com/r/interestingasfuck/.rss",
+      "https://www.reddit.com/r/nextfuckinglevel/.rss"
+    ],
+    "music": [
+      "https://www.reddit.com/r/Music/.rss"
+    ]
+  },
+  "seed_pages": [
+    "https://archive.org/details/movies",
+    "https://archive.org/details/opensource_movies"
+  ],
+  "allow_ext": ["mp4","webm","m3u8"]
+}
