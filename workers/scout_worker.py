@@ -1,3 +1,4 @@
+from fsm.validator import can_transition
 import sys; sys.path.append("/srv/memory/fsm")
 import os,time,uuid,json
 from fsm import set_state
@@ -14,3 +15,5 @@ def main():
 
 if __name__=="__main__":
     main()
+
+# FSM guard must wrap set_state calls
