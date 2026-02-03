@@ -26,3 +26,6 @@ while True:
         with open(path) as f: item = json.load(f)
         if item.get("state") == "probed": analyze_item(path)
     time.sleep(5)
+
+# FSM check
+# use can_transition(old_state,new_state) before state change
