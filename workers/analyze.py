@@ -1,3 +1,5 @@
+from fsm.states import STATES, TRANSITIONS
+#!/usr/bin/python3
 import time, json, os, httpx
 FSM_DIR = "/srv/memory/fsm/items"
 def analyze_item(item_path):

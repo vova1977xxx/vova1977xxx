@@ -1,3 +1,4 @@
+from fsm.states import STATES, TRANSITIONS
 import time, json, os
 FSM_DIR="/srv/memory/fsm/items"
 def rank_item(path):
