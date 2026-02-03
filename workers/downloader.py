@@ -1,8 +1,15 @@
-from fsm.validator import can_transition
-from fsm.states import STATES, TRANSITIONS
-import time
-while True:
-    time.sleep(10)
+import os, time, json
+from fsm.api import safe_set
+FSM_DIR='/srv/memory/fsm/items'
+def run():
+    while True:
+        for f in os.listdir(FSM_DIR):
+            p=os.path.join(FSM_DIR,f)
+            try:
+                d=json.load(open(p))
+                if d.get('state')=='scouted':
+                    safe_set(f,'scouted','downloaded',{})
+            except: pass
+        time.sleep(5)
 
-# FSM check
-# use can_transition(old_state,new_state) before state change
+if __name__=='__main__': run()
