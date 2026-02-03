@@ -8,7 +8,7 @@ def run():
             try:
                 d=json.load(open(p))
                 if d.get('state')=='scouted':
-                    safe_set(f,'scouted','downloaded',{})
+                    safe_set(f.replace('.json',''),'scouted','downloaded',{})
             except: pass
         time.sleep(5)
 
