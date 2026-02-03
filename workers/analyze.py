@@ -1,3 +1,4 @@
+from fsm.validator import can_transition
 from fsm.states import STATES, TRANSITIONS
 #!/usr/bin/python3
 import time, json, os, httpx
