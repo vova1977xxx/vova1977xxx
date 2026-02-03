@@ -1,3 +1,4 @@
+import sys; sys.path.append("/srv/gemivas-platform")
 import os, time, json
 from fsm.api import safe_set
 FSM_DIR='/srv/memory/fsm/items'
