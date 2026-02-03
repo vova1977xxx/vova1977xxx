@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: gemivas_nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /srv/web:/srv/web
+  ollama:
+    image: ollama/ollama:latest
+    container_name: gemivas_ollama
+    restart: always
+    ports:
+      - "11434:11434"
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: gemivas_qdrant
+    restart: always
+    ports:
+      - "6333:6333"
+  feed_api:
+    build: ../services/feed_api
+    container_name: gemivas_feed_api
+    restart: always
+  workers:
+    build: ../services/workers
+    container_name: gemivas_workers
+    restart: always
+  scout:
+    build: ../services/scout
+    container_name: gemivas_scout
+    restart: always
+networks:
+  gemivas_net:
+    driver: bridge

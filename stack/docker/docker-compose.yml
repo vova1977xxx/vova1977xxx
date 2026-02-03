@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  brain:
+    image: gemivas/brain
+  feed_api:
+    image: gemivas/feed_api
+  workers:
+    image: gemivas/workers
+  nginx:
+    image: nginx
